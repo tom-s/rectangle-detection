@@ -4,9 +4,6 @@
  * - http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
  */
 function ContourFinder() {
-    this.pixelsWidth;   // pixels width
-    this.pixelsHeight;  // pixels height
-    this.pixels;                // pixels (single array of r,g,b,a values of image)
     this.allContours = [];
 
     this.seen = [];
@@ -15,11 +12,11 @@ function ContourFinder() {
         this.pixelsWidth = imageData.width;
         this.pixelsHeight = imageData.height;
         this.pixels = imageData.data;
-    }
+    };
 
     this.getPosition = function(x, y) {
         return (y * this.pixelsWidth + x) * 4;
-    }
+    };
 
     this.getPixel = function(x, y) {
         return {
@@ -28,14 +25,14 @@ function ContourFinder() {
             b: this.pixels[this.getPosition(x, y) + 2],
             a: this.pixels[this.getPosition(x, y) + 3]
         };
-    }
+    };
 
     this.setPixel = function(x, y, pixel) {
         this.pixels[this.getPosition(x, y)] = pixel[0];
         this.pixels[this.getPosition(x, y) + 1] = pixel[1];
         this.pixels[this.getPosition(x, y) + 2] = pixel[2];
         this.pixels[this.getPosition(x, y) + 3] = pixel[3];
-    }
+    };
 
     this.findContours = function() {
         // create a new pixel array
@@ -58,7 +55,7 @@ function ContourFinder() {
                 }
             }
         }
-    }
+    };
 
     this.markAsSeen = function(point) {
         this.seen[point.x] = this.seen[point.x] || [];
@@ -118,7 +115,7 @@ function ContourFinder() {
             return points;
         }
         return null;
-    }
+    };
 
     this.getPoints = function(points) {
         var log = "";
@@ -127,7 +124,7 @@ function ContourFinder() {
             log += point.x+","+point.y+" > ";
         }
         return log;
-    }
+    };
 }
 
 function polygonArea(points) {
@@ -155,7 +152,7 @@ onmessage = function (event) {
         const contour = contourFinder.allContours[c];
         const area = polygonArea(contour);
 
-        if (area > maxArea) {
+        if (area > maxArea && contour.length >= 3) {
             maxArea = area;
             maxContour = contour;
         }
