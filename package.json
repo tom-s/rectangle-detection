@@ -1,0 +1,23 @@
+{
+  "name": "jsfeat-experiments",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "watch": "watchify js/main.js -o js/bundle.js",
+    "start": "npm run watch & python -m SimpleHTTPServer",
+    "deploy": "./deploy.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cowbell/jsfeat-experiments.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dat-gui": "^0.5.0",
+    "jsfeat": "0.0.8"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "watchify": "^3.7.0"
+  }
+}

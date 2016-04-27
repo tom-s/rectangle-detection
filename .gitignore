@@ -1,2 +1,4 @@
 bower_compontents/
 node_modules/
+dist/
+js/bundle.js
