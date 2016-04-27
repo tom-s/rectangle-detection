@@ -1,10 +1,10 @@
-const browserify = require("browserify-middleware");
+const exec = require("child_process").exec;
 const express = require("express");
 const app = express();
 
-app.use(express.static(__dirname + "/app"));
+exec("watchify app/js/main.js -o app/js/bundle.js");
 
-app.get("/js/bundle.js", browserify("./app/js/main.js"));
+app.use(express.static(__dirname + "/app"));
 
 app.listen(3000);
 console.log("Listening on port 3000");

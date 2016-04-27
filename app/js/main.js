@@ -1,5 +1,6 @@
 const jsfeat = require("jsfeat");
 const dat = require("dat-gui");
+const _ = require("lodash");
 const video = document.getElementById("webcam");
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
@@ -51,8 +52,17 @@ let maxContour;
 
 const contourFinderWorker = new Worker("js/contour-worker.js");
 contourFinderWorker.addEventListener("message", function (e) {
-    maxContour = e.data;
+    maxContour = approxToTetragon(e.data);
 });
+const approxToTetragon = (points) => {
+    const lt = _.sortBy(points, p => Math.pow(p.x, 2) + Math.pow(p.y, 2))[0];
+    const rt = _.sortBy(points, p => Math.pow(width - p.x, 2) + Math.pow(p.y, 2))[0];
+    const lb = _.sortBy(points, p => Math.pow(p.x, 2) + Math.pow(height - p.y, 2))[0];
+    const rb = _.sortBy(points, p => Math.pow(width - p.x, 2) + Math.pow(height - p.y, 2))[0];
+
+    return [lt, rt, rb, lb];
+};
+
 const throttle = (fn, time) => {
     let wait = false;
 

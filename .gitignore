@@ -1,4 +1,7 @@
 bower_compontents/
 node_modules/
+
 dist/
 app/js/bundle.js
+
+*.log
