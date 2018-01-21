@@ -3,7 +3,9 @@ const dat = require("dat-gui");
 const _ = require("lodash");
 const video = document.getElementById("webcam");
 const canvas = document.getElementById("canvas");
+const canvas2 = document.getElementById("canvas2");
 const context = canvas.getContext("2d");
+const context2 = canvas2.getContext("2d");
 const height = canvas.height;
 const width = canvas.width;
 const image = new jsfeat.matrix_t(width, height, jsfeat.U8C1_t);
@@ -31,7 +33,9 @@ const setupGUI = () => {
 }
 
 const drawPoly = (context, points) => {
-    if (!points) {
+    points = _.compact(points)
+
+    if (!points.length) {
         return;
     }
 
@@ -50,10 +54,29 @@ const drawPoly = (context, points) => {
 
 let maxContour;
 
+const contourFinderWorker = new Worker("js/contour-worker2.js");
+contourFinderWorker.addEventListener("message", function (e) {
+    console.log("received contours", e.data)
+    //maxContour = approxToTetragon(e.data);
+    context2.clearRect(0, 0, width, height)
+    e.data.forEach((c, i) => {
+        context2.beginPath()
+        context2.strokeStyle = 'hsl('+~~(Math.random()*360)+', 50%, 50%)'
+        c.forEach(function(p){{
+            context2.lineTo(p % width, Math.floor(p/width))
+        }})
+        context2.stroke()
+    })
+
+});
+
+/*
 const contourFinderWorker = new Worker("js/contour-worker.js");
 contourFinderWorker.addEventListener("message", function (e) {
+    console.log("received contours", e.data)
     maxContour = approxToTetragon(e.data);
-});
+});*/
+
 const approxToTetragon = (points) => {
     const lt = _.sortBy(points, p => Math.pow(p.x, 2) + Math.pow(p.y, 2))[0];
     const rt = _.sortBy(points, p => Math.pow(width - p.x, 2) + Math.pow(p.y, 2))[0];
@@ -77,7 +100,7 @@ const throttle = (fn, time) => {
         }
     };
 };
-const throttledContourFind = throttle((imageData) => contourFinderWorker.postMessage(imageData), 200);
+const throttledContourFind = throttle((imageData) => contourFinderWorker.postMessage(imageData), 2000);
 
 const tick = () => {
     requestAnimationFrame(tick);
